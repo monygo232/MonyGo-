@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111827">
+  <title>MonyGo — Create, Share & Earn</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="logo">M</span><span>MonyGo</span></div>
+    <button id="profileBtn" class="avatar">MG</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">CREATE • SHARE • EARN</p>
+      <h1>Turn your content into rewards.</h1>
+      <p class="sub">Create posts, share them with your audience, and collect MonyPoints. This starter version is a safe demo; real payouts require a backend and verified payment integration.</p>
+      <div class="hero-actions">
+        <button class="primary" data-scroll="create">Create post</button>
+        <button class="secondary" data-scroll="feed">Explore</button>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div><span>Balance</span><strong id="balance">0</strong><small> MonyPoints</small></div>
+      <div><span>Posts</span><strong id="postCount">0</strong></div>
+      <div><span>Likes</span><strong id="likeCount">0</strong></div>
+    </section>
+
+    <section id="create" class="card">
+      <div class="section-title">
+        <div><p class="eyebrow">CREATE</p><h2>Publish something</h2></div>
+        <span class="pill">+10 points</span>
+      </div>
+      <label>Title<input id="title" maxlength="80" placeholder="Give your post a title"></label>
+      <label>Content<textarea id="content" maxlength="500" rows="5" placeholder="What do you want to share?"></textarea></label>
+      <button id="publishBtn" class="primary full">Publish post</button>
+      <p id="message" class="message"></p>
+    </section>
+
+    <section id="feed" class="feed-section">
+      <div class="section-title">
+        <div><p class="eyebrow">COMMUNITY</p><h2>Latest posts</h2></div>
+        <button id="resetBtn" class="text-btn">Reset demo</button>
+      </div>
+      <div id="feedList" class="feed-list"></div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button data-scroll="feed">Home</button>
+    <button data-scroll="create">Create</button>
+    <button id="walletBtn">Wallet</button>
+  </nav>
+
+  <dialog id="walletDialog">
+    <div class="dialog-head"><h3>Wallet</h3><button id="closeWallet">×</button></div>
+    <p class="wallet-balance"><span id="walletBalance">0</span> points</p>
+    <p class="muted">Demo only. No real money is transferred in this version.</p>
+    <button id="closeWallet2" class="primary full">Done</button>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
