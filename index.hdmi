@@ -1,0 +1,1550 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080f20">
+<title>MonyGo V2 — Create, Share & Earn</title>
+
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+ margin:0;
+ background:#080f20;
+ color:#f8fafc;
+ font-family:Arial,sans-serif;
+}
+
+button,input,textarea{font:inherit}
+
+button{
+ border:0;
+ border-radius:12px;
+ padding:12px 18px;
+ color:white;
+ cursor:pointer;
+ font-weight:bold;
+}
+
+button:disabled{
+ opacity:.5;
+ cursor:not-allowed;
+}
+
+.topbar{
+ position:sticky;
+ top:0;
+ z-index:50;
+ height:68px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding:10px 16px;
+ background:rgba(8,15,32,.96);
+ border-bottom:1px solid #273452;
+ backdrop-filter:blur(12px);
+}
+
+.brand{
+ display:flex;
+ align-items:center;
+ gap:10px;
+ font-size:21px;
+ font-weight:bold;
+}
+
+.logo,.profile-avatar{
+ width:42px;
+ height:42px;
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ background:linear-gradient(135deg,#7048ff,#ad7cff);
+ font-weight:bold;
+}
+
+.profile-avatar{
+ border:2px solid #9272ff;
+ cursor:pointer;
+}
+
+main{
+ max-width:720px;
+ margin:auto;
+ padding:25px 16px 110px;
+}
+
+.hero{
+ text-align:center;
+ padding:25px 0 30px;
+}
+
+.hero .eyebrow{
+ color:#b9a8ff;
+ font-size:13px;
+ letter-spacing:2px;
+}
+
+.hero h1{
+ font-size:clamp(42px,10vw,68px);
+ line-height:1.02;
+ margin:10px 0 17px;
+}
+
+.hero p{
+ color:#aeb8ca;
+ line-height:1.6;
+}
+
+.actions{
+ display:flex;
+ justify-content:center;
+ gap:10px;
+ flex-wrap:wrap;
+ margin-top:22px;
+}
+
+.primary{
+ background:linear-gradient(135deg,#7048ff,#aa7bff);
+ box-shadow:0 8px 25px rgba(112,72,255,.2);
+}
+
+.secondary{
+ background:#25314c;
+}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+ margin:10px 0 25px;
+}
+
+.stat{
+ background:#111a30;
+ border:1px solid #293754;
+ border-radius:16px;
+ padding:14px 8px;
+ text-align:center;
+}
+
+.stat span{
+ display:block;
+ color:#9da8bd;
+ font-size:13px;
+}
+
+.stat strong{
+ display:block;
+ font-size:25px;
+ margin:2px 0;
+}
+
+.card{
+ background:#151f38;
+ border:1px solid #293754;
+ border-radius:18px;
+ padding:20px;
+ margin-bottom:25px;
+ box-shadow:0 12px 30px rgba(0,0,0,.16);
+}
+
+.card h2{
+ margin:0 0 8px;
+}
+
+.muted{
+ color:#9da8bd;
+}
+
+label{
+ display:block;
+ margin:15px 0;
+ font-weight:bold;
+}
+
+input,textarea{
+ width:100%;
+ margin-top:7px;
+ padding:13px;
+ background:#0b1326;
+ color:#fff;
+ border:1px solid #2c3955;
+ border-radius:12px;
+ outline:none;
+}
+
+textarea{
+ min-height:110px;
+ resize:vertical;
+}
+
+input:focus,textarea:focus{
+ border-color:#7651ff;
+}
+
+.full{
+ width:100%;
+}
+
+.video-box{
+ background:#03060d;
+ border-radius:16px;
+ overflow:hidden;
+ margin:15px 0;
+ border:1px solid #293754;
+}
+
+video{
+ width:100%;
+ display:block;
+ background:#000;
+ max-height:430px;
+}
+
+.video-controls{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px;
+}
+
+.message{
+ text-align:center;
+ color:#b9a7ff;
+ min-height:24px;
+}
+
+.post{
+ background:#111a30;
+ border:1px solid #293754;
+ border-radius:16px;
+ padding:15px;
+ margin-top:13px;
+}
+
+.post h3{
+ margin:0 0 7px;
+}
+
+.post p{
+ color:#b8c1d2;
+ white-space:pre-wrap;
+}
+
+.post-video{
+ width:100%;
+ border-radius:12px;
+ margin:10px 0;
+ background:#000;
+}
+
+.post-actions{
+ display:flex;
+ gap:8px;
+ margin-top:10px;
+}
+
+.like-btn{
+ background:#222e49;
+ flex:1;
+}
+
+.view-btn{
+ background:#222e49;
+ flex:1;
+}
+
+.post small{
+ display:block;
+ color:#7f8ca4;
+ margin-top:10px;
+}
+
+.bottom-nav{
+ position:fixed;
+ left:0;
+ right:0;
+ bottom:0;
+ z-index:100;
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:8px;
+ padding:9px 12px;
+ background:rgba(8,15,32,.97);
+ border-top:1px solid #273452;
+}
+
+.bottom-nav button{
+ background:#202c47;
+}
+
+.bottom-nav .active{
+ background:#7651ff;
+}
+
+.dialog{
+ position:fixed;
+ inset:0;
+ z-index:200;
+ display:none;
+ align-items:flex-end;
+ justify-content:center;
+ background:rgba(0,0,0,.7);
+}
+
+.dialog.show{
+ display:flex;
+}
+
+.sheet{
+ width:min(720px,100%);
+ background:#111a30;
+ border:1px solid #33415f;
+ border-radius:22px 22px 0 0;
+ padding:22px;
+}
+
+.sheet-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.close{
+ background:transparent;
+ font-size:27px;
+ padding:3px 8px;
+}
+
+.balance-big{
+ text-align:center;
+ font-size:40px;
+ font-weight:bold;
+ margin:25px 0 5px;
+ color:#c8b9ff;
+}
+
+.profile-row{
+ display:flex;
+ align-items:center;
+ gap:15px;
+ margin:20px 0;
+}
+
+.profile-big{
+ width:70px;
+ height:70px;
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ background:linear-gradient(135deg,#7048ff,#ad7cff);
+ font-size:26px;
+ font-weight:bold;
+}
+
+.login-screen{
+ min-height:100vh;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px;
+}
+
+.login-box{
+ width:100%;
+ max-width:420px;
+ background:#111a30;
+ border:1px solid #293754;
+ border-radius:22px;
+ padding:25px;
+}
+
+.login-logo{
+ width:70px;
+ height:70px;
+ border-radius:50%;
+ display:grid;
+ place-items:center;
+ margin:auto;
+ background:linear-gradient(135deg,#7048ff,#ad7cff);
+ font-size:32px;
+ font-weight:bold;
+}
+
+.tabs{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:5px;
+ padding:4px;
+ margin:25px 0 15px;
+ background:#0a1224;
+ border-radius:13px;
+}
+
+.tabs button{
+ background:transparent;
+}
+
+.tabs .selected{
+ background:#7651ff;
+}
+
+.logout{
+ background:#242f49;
+}
+
+.hidden{
+ display:none!important;
+}
+
+@media(max-width:450px){
+ .hero h1{font-size:43px}
+ .card{padding:17px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= LOGIN ================= -->
+
+<section id="loginScreen" class="login-screen">
+
+<div class="login-box">
+
+<div class="login-logo">M</div>
+
+<h2 style="text-align:center;margin-bottom:5px">
+ MonyGo
+</h2>
+
+<p style="text-align:center;color:#9da8bd">
+ Create • Share • Earn
+</p>
+
+<div class="tabs">
+
+<button id="loginTab" class="selected">
+ Login
+</button>
+
+<button id="registerTab">
+ Register
+</button>
+
+</div>
+
+<input
+ id="authUsername"
+ placeholder="Email or Username"
+ autocomplete="username"
+>
+
+<input
+ id="authPassword"
+ type="password"
+ placeholder="Password"
+ autocomplete="current-password"
+>
+
+<button
+ id="authBtn"
+ class="primary full"
+ style="margin-top:15px"
+>
+ Login
+</button>
+
+<p id="authMessage" class="message"></p>
+
+</div>
+
+</section>
+
+
+<!-- ================= APP ================= -->
+
+<div id="app" class="hidden">
+
+<header class="topbar">
+
+<div class="brand">
+<span class="logo">M</span>
+<span>MonyGo</span>
+</div>
+
+<button
+ id="profileBtn"
+ class="profile-avatar"
+>
+MG
+</button>
+
+</header>
+
+
+<main>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<p class="eyebrow">
+ CREATE • SHARE • EARN
+</p>
+
+<h1>
+ Turn your content into rewards.
+</h1>
+
+<p>
+ Upload videos, record videos, share your
+ content and collect MonyPoints.
+</p>
+
+<div class="actions">
+
+<button
+ class="primary"
+ onclick="scrollToId('studio')"
+>
+🎥 Create Video
+</button>
+
+<button
+ class="secondary"
+ onclick="scrollToId('feed')"
+>
+🔥 Explore
+</button>
+
+</div>
+
+</section>
+
+
+<!-- STATS -->
+
+<section class="stats">
+
+<div class="stat">
+<span>Balance</span>
+<strong id="balance">0</strong>
+<span>MonyPoints</span>
+</div>
+
+<div class="stat">
+<span>Videos</span>
+<strong id="videoCount">0</strong>
+<span>Posts</span>
+</div>
+
+<div class="stat">
+<span>Likes</span>
+<strong id="likeCount">0</strong>
+<span>Total</span>
+</div>
+
+</section>
+
+
+<!-- VIDEO STUDIO -->
+
+<section id="studio" class="card">
+
+<h2>🎥 Video Studio</h2>
+
+<p class="muted">
+ Upload a video or record one with your camera.
+</p>
+
+<label>
+ Video Title
+
+<input
+ id="videoTitle"
+ maxlength="80"
+ placeholder="Give your video a title"
+>
+
+</label>
+
+
+<label>
+ Description
+
+<textarea
+ id="videoDescription"
+ maxlength="500"
+ placeholder="Tell people about your video..."
+></textarea>
+
+</label>
+
+
+<label>
+ Upload Video
+
+<input
+ id="videoFile"
+ type="file"
+ accept="video/*"
+>
+
+</label>
+
+
+<div class="video-box">
+
+<video
+ id="videoPreview"
+ controls
+ playsinline
+></video>
+
+</div>
+
+
+<div class="video-controls">
+
+<button
+ id="cameraBtn"
+ class="primary"
+>
+📹 Start Camera
+</button>
+
+<button
+ id="stopBtn"
+ class="secondary"
+ disabled
+>
+⏹ Stop
+</button>
+
+</div>
+
+
+<button
+ id="downloadBtn"
+ class="secondary full"
+ style="margin-top:10px;display:none"
+>
+⬇️ Download Recording
+</button>
+
+
+<button
+ id="publishBtn"
+ class="primary full"
+ style="margin-top:10px"
+>
+🚀 Publish Video +10
+</button>
+
+
+<p id="videoMessage" class="message"></p>
+
+</section>
+
+
+<!-- FEED -->
+
+<section id="feed" class="card">
+
+<h2>🔥 Latest Videos</h2>
+
+<p class="muted">
+ Community video feed
+</p>
+
+<div id="videoList"></div>
+
+</section>
+
+</main>
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav">
+
+<button
+ class="active"
+ onclick="scrollToId('feed')"
+>
+🏠 Home
+</button>
+
+<button
+ onclick="scrollToId('studio')"
+>
+🎥 Create
+</button>
+
+<button
+ onclick="openWallet()"
+>
+🪙 Wallet
+</button>
+
+</nav>
+
+</div>
+
+
+<!-- ================= WALLET ================= -->
+
+<div id="walletDialog" class="dialog">
+
+<div class="sheet">
+
+<div class="sheet-head">
+
+<h2>🪙 Wallet</h2>
+
+<button
+ class="close"
+ onclick="closeWallet()"
+>
+×
+</button>
+
+</div>
+
+<div class="balance-big">
+<span id="walletBalance">0</span>
+</div>
+
+<p
+ style="text-align:center"
+ class="muted"
+>
+ MonyPoints
+</p>
+
+<hr style="border-color:#293754">
+
+<p class="muted">
+🎬 Publish video = +10 points
+</p>
+
+<p class="muted">
+❤️ Likes = demo statistics
+</p>
+
+<p class="muted">
+💵 Real withdrawals are not enabled yet.
+</p>
+
+<button
+ class="primary full"
+ onclick="closeWallet()"
+>
+Done
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ================= PROFILE ================= -->
+
+<div id="profileDialog" class="dialog">
+
+<div class="sheet">
+
+<div class="sheet-head">
+
+<h2>👤 Profile</h2>
+
+<button
+ class="close"
+ onclick="closeProfile()"
+>
+×
+</button>
+
+</div>
+
+<div class="profile-row">
+
+<div id="profileBig" class="profile-big">
+MG
+</div>
+
+<div>
+
+<h3 id="profileName">
+User
+</h3>
+
+<p class="muted">
+MonyGo Creator
+</p>
+
+</div>
+
+</div>
+
+<p>
+Videos:
+<strong id="profileVideos">0</strong>
+</p>
+
+<p>
+Points:
+<strong id="profilePoints">0</strong>
+</p>
+
+<button
+ class="secondary full"
+ onclick="logout()"
+>
+🚪 Logout
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   MONYGO V2
+========================================= */
+
+
+/* ---------- STATE ---------- */
+
+let state = JSON.parse(
+ localStorage.getItem("monygo-v2-state") ||
+ '{"balance":0,"likes":0,"videos":[]}'
+);
+
+
+/* ---------- AUTH MODE ---------- */
+
+let loginMode = true;
+
+
+/* ---------- VIDEO VARIABLES ---------- */
+
+let currentVideoURL = "";
+
+let mediaStream = null;
+
+let recorder = null;
+
+let recordedChunks = [];
+
+
+/* ---------- ELEMENTS ---------- */
+
+const loginScreen =
+ document.getElementById("loginScreen");
+
+const app =
+ document.getElementById("app");
+
+const authUsername =
+ document.getElementById("authUsername");
+
+const authPassword =
+ document.getElementById("authPassword");
+
+const authBtn =
+ document.getElementById("authBtn");
+
+const authMessage =
+ document.getElementById("authMessage");
+
+
+/* =========================================
+   LOGIN / REGISTER
+========================================= */
+
+document.getElementById("loginTab").onclick = () => {
+
+ loginMode = true;
+
+ document
+  .getElementById("loginTab")
+  .classList.add("selected");
+
+ document
+  .getElementById("registerTab")
+  .classList.remove("selected");
+
+ authBtn.textContent = "Login";
+
+ authMessage.textContent = "";
+
+};
+
+
+document.getElementById("registerTab").onclick = () => {
+
+ loginMode = false;
+
+ document
+  .getElementById("registerTab")
+  .classList.add("selected");
+
+ document
+  .getElementById("loginTab")
+  .classList.remove("selected");
+
+ authBtn.textContent = "Create Account";
+
+ authMessage.textContent = "";
+
+};
+
+
+authBtn.onclick = () => {
+
+ const username =
+  authUsername.value.trim();
+
+ const password =
+  authPassword.value.trim();
+
+
+ if(!username || !password){
+
+  authMessage.textContent =
+   "Please enter username and password.";
+
+  return;
+
+ }
+
+
+ if(password.length < 4){
+
+  authMessage.textContent =
+   "Password must be at least 4 characters.";
+
+  return;
+
+ }
+
+
+ if(loginMode){
+
+  localStorage.setItem(
+   "monygo-user",
+   username
+  );
+
+  openApp();
+
+ }else{
+
+  localStorage.setItem(
+   "monygo-user",
+   username
+  );
+
+  authMessage.textContent =
+   "Account created successfully!";
+
+  setTimeout(openApp,700);
+
+ }
+
+};
+
+
+function openApp(){
+
+ loginScreen.style.display = "none";
+
+ app.classList.remove("hidden");
+
+ updateUserUI();
+
+ render();
+
+}
+
+
+function logout(){
+
+ localStorage.removeItem("monygo-user");
+
+ closeProfile();
+
+ app.classList.add("hidden");
+
+ loginScreen.style.display = "flex";
+
+ authUsername.value = "";
+
+ authPassword.value = "";
+
+}
+
+
+/* =========================================
+   USER PROFILE
+========================================= */
+
+function updateUserUI(){
+
+ const user =
+  localStorage.getItem("monygo-user") ||
+  "MG";
+
+ const initials =
+  user.substring(0,2).toUpperCase();
+
+ document.getElementById(
+  "profileBtn"
+ ).textContent = initials;
+
+ document.getElementById(
+  "profileBig"
+ ).textContent = initials;
+
+ document.getElementById(
+  "profileName"
+ ).textContent = user;
+
+}
+
+
+document.getElementById("profileBtn").onclick =
+ () => {
+
+  updateUserUI();
+
+  document.getElementById(
+   "profileVideos"
+  ).textContent = state.videos.length;
+
+  document.getElementById(
+   "profilePoints"
+  ).textContent = state.balance;
+
+  document.getElementById(
+   "profileDialog"
+  ).classList.add("show");
+
+ };
+
+
+function closeProfile(){
+
+ document.getElementById(
+  "profileDialog"
+ ).classList.remove("show");
+
+}
+
+
+/* =========================================
+   VIDEO UPLOAD
+========================================= */
+
+const videoFile =
+ document.getElementById("videoFile");
+
+const videoPreview =
+ document.getElementById("videoPreview");
+
+const videoMessage =
+ document.getElementById("videoMessage");
+
+
+videoFile.onchange = () => {
+
+ const file =
+  videoFile.files[0];
+
+ if(!file) return;
+
+
+ if(!file.type.startsWith("video/")){
+
+  videoMessage.textContent =
+   "Please select a video file.";
+
+  return;
+
+ }
+
+
+ if(currentVideoURL){
+
+  URL.revokeObjectURL(
+   currentVideoURL
+  );
+
+ }
+
+
+ currentVideoURL =
+  URL.createObjectURL(file);
+
+
+ videoPreview.srcObject = null;
+
+ videoPreview.src =
+  currentVideoURL;
+
+ videoPreview.controls = true;
+
+
+ videoMessage.textContent =
+  "✅ Video loaded successfully.";
+
+};
+
+
+/* =========================================
+   CAMERA RECORDING
+========================================= */
+
+const cameraBtn =
+ document.getElementById("cameraBtn");
+
+const stopBtn =
+ document.getElementById("stopBtn");
+
+const downloadBtn =
+ document.getElementById("downloadBtn");
+
+
+cameraBtn.onclick = async () => {
+
+ try{
+
+  if(
+   !navigator.mediaDevices ||
+   !navigator.mediaDevices.getUserMedia
+  ){
+
+   videoMessage.textContent =
+    "Camera is not supported.";
+
+   return;
+
+  }
+
+
+  mediaStream =
+   await navigator.mediaDevices.getUserMedia({
+    video:true,
+    audio:true
+   });
+
+
+  videoPreview.src =
+   "";
+
+  videoPreview.srcObject =
+   mediaStream;
+
+  videoPreview.muted = true;
+
+  await videoPreview.play();
+
+
+  recordedChunks = [];
+
+
+  let mimeType = "";
+
+
+  if(
+   window.MediaRecorder &&
+   MediaRecorder.isTypeSupported(
+    "video/webm;codecs=vp9,opus"
+   )
+  ){
+
+   mimeType =
+    "video/webm;codecs=vp9,opus";
+
+  }else if(
+   window.MediaRecorder &&
+   MediaRecorder.isTypeSupported(
+    "video/webm"
+   )
+  ){
+
+   mimeType =
+    "video/webm";
+
+  }
+
+
+  if(!window.MediaRecorder){
+
+   videoMessage.textContent =
+    "Recording is not supported.";
+
+   return;
+
+  }
+
+
+  recorder =
+   new MediaRecorder(
+    mediaStream,
+    mimeType
+     ? {mimeType:mimeType}
+     : undefined
+   );
+
+
+  recorder.ondataavailable =
+   event => {
+
+    if(event.data.size > 0){
+
+     recordedChunks.push(
+      event.data
+     );
+
+    }
+
+   };
+
+
+  recorder.onstop = () => {
+
+   const blob =
+    new Blob(
+     recordedChunks,
+     {type:"video/webm"}
+    );
+
+
+   if(currentVideoURL){
+
+    URL.revokeObjectURL(
+     currentVideoURL
+    );
+
+   }
+
+
+   currentVideoURL =
+    URL.createObjectURL(blob);
+
+
+   videoPreview.srcObject =
+    null;
+
+   videoPreview.src =
+    currentVideoURL;
+
+   videoPreview.muted = false;
+
+   videoPreview.controls = true;
+
+
+   downloadBtn.style.display =
+    "block";
+
+
+   videoMessage.textContent =
+    "✅ Recording finished!";
+
+
+   downloadBtn.onclick = () => {
+
+    const a =
+     document.createElement("a");
+
+    a.href =
+     currentVideoURL;
+
+    a.download =
+     "monygo-video.webm";
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+   };
+
+  };
+
+
+  recorder.start();
+
+
+  cameraBtn.disabled =
+   true;
+
+  stopBtn.disabled =
+   false;
+
+
+  videoMessage.textContent =
+   "🔴 Recording...";
+
+ }catch(error){
+
+  videoMessage.textContent =
+   "❌ Camera permission denied or unavailable.";
+
+ }
+
+};
+
+
+/* =========================================
+   STOP RECORDING
+========================================= */
+
+stopBtn.onclick = () => {
+
+ if(
+  recorder &&
+  recorder.state !== "inactive"
+ ){
+
+  recorder.stop();
+
+ }
+
+
+ if(mediaStream){
+
+  mediaStream
+   .getTracks()
+   .forEach(track => track.stop());
+
+ }
+
+
+ cameraBtn.disabled =
+  false;
+
+ stopBtn.disabled =
+  true;
+
+};
+
+
+/* =========================================
+   PUBLISH VIDEO
+========================================= */
+
+document.getElementById("publishBtn").onclick =
+ () => {
+
+ const title =
+  document.getElementById(
+   "videoTitle"
+  ).value.trim();
+
+ const description =
+  document.getElementById(
+   "videoDescription"
+  ).value.trim();
+
+
+ if(!title){
+
+  videoMessage.textContent =
+   "Please enter a video title.";
+
+  return;
+
+ }
+
+
+ if(!currentVideoURL){
+
+  videoMessage.textContent =
+   "Please upload or record a video.";
+
+  return;
+
+ }
+
+
+ const user =
+  localStorage.getItem(
+   "monygo-user"
+  ) || "User";
+
+
+ /*
+   Video URL is kept in memory for this session.
+   We do NOT put large video files into localStorage.
+ */
+
+ const video = {
+
+  id:Date.now(),
+
+  title:title,
+
+  description:description,
+
+  user:user,
+
+  likes:0,
+
+  views:0,
+
+  date:new Date().toLocaleString(),
+
+  url:currentVideoURL
+
+ };
+
+
+ state.videos.push(video);
+
+ state.balance += 10;
+
+ save();
+
+ render();
+
+
+ document.getElementById(
+  "videoTitle"
+ ).value = "";
+
+ document.getElementById(
+  "videoDescription"
+ ).value = "";
+
+
+ videoMessage.textContent =
+  "🎉 Video published! +10 MonyPoints";
+
+
+ scrollToId("feed");
+
+
+ setTimeout(() => {
+
+  videoMessage.textContent = "";
+
+ },2500);
+
+};
+
+
+/* =========================================
+   RENDER FEED
+========================================= */
+
+function render(){
+
+ document.getElementById(
+  "balance"
+ ).textContent =
+  state.balance;
+
+
+ document.getElementById(
+  "videoCount"
+ ).textContent =
+  state.videos.length;
+
+
+ document.getElementById(
+  "likeCount"
+ ).textContent =
+  state.likes;
+
+
+ document.getElementById(
+  "walletBalance"
+ ).textContent =
+  state.balance;
+
+
+ const list =
+  document.getElementById(
+   "videoList"
+  );
+
+
+ if(!state.videos.length){
+
+  list.innerHTML = `
+   <div class="post"
+        style="text-align:center;color:#8995ab">
+     🎬 No videos yet.<br>
+     Create your first video!
+   </div>
+  `;
+
+  return;
+
+ }
+
+
+ list.innerHTML =
+  state.videos
+   .slice()
+   .reverse()
+   .map(video => {
+
+    return `
+
+     <article class="post">
+
+       <h3>
+        🎬 ${escapeHTML(video.title)}
+       </h3>
+
+       <p>
+        ${escapeHTML(
+         video.description ||
+         "No description"
+        )}
+       </p>
+
+       ${
+        video.url
+        ?
+        `
+        <video
+         class="post-video"
+         src="${video.url}"
+         controls
+         playsinline
+         preload="metadata"
+         data-video-id="${video.id}"
+        ></video>
+        `
+        :
+        ""
+       }
+
+       <small>
+        👤 ${escapeHTML(video.user)}
+        • ${escapeHTML(video.date)}
+       </small>
+
+       <div class="post-actions">
+
+        <button
+         class="like-btn"
+         onclick="likeVideo(${video.id})"
+        >
+         ❤️ ${video.likes}
+        </button>
+
+        <button
+         class="view-btn"
+         onclick="viewVideo(${v
