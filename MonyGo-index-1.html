@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07110c">
+<title>MonyGo</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#07110c;color:#f4fff7;font-family:Arial,"Noto Sans Myanmar",sans-serif}
+button,input,textarea{font:inherit}
+button{border:0;cursor:pointer}
+.hidden{display:none!important}
+.app{max-width:760px;margin:auto;padding-bottom:90px}
+.header{position:sticky;top:0;z-index:10;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#07110c;border-bottom:1px solid #193524}
+.brand{font-size:22px;font-weight:900}.brand span,.green,.reward{color:#35e27f}
+.avatar{width:42px;height:42px;border-radius:50%;background:#35e27f;color:#06120b;font-weight:900}
+.wrap{padding:16px}
+.card{background:#0d1b13;border:1px solid #1b3a28;border-radius:18px;padding:16px;margin:14px 0}
+.hero{padding:21px;background:linear-gradient(145deg,#0e2b1b,#0a1510)}
+.hero h1{font-size:29px;line-height:1.15;margin:8px 0}
+.muted{color:#9eb5a6}
+.btn{background:#35e27f;color:#06120b;font-weight:900;border-radius:12px;padding:12px 16px}
+.btn.dark{background:#17271d;color:#e5f8eb;border:1px solid #294a35}
+.btn.red{background:#d94c4c;color:#fff}
+.full{width:100%}
+.row{display:flex;gap:9px}.row>*{flex:1}
+input,textarea{width:100%;padding:13px;margin:6px 0 11px;border-radius:12px;border:1px solid #284936;background:#09150e;color:#fff;outline:none}
+textarea{min-height:95px;resize:vertical}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.stat{padding:13px 7px;text-align:center;background:#0a1710;border:1px solid #183523;border-radius:14px}
+.stat b{display:block;font-size:21px;margin:4px 0}
+.badge{display:inline-block;padding:5px 9px;border-radius:99px;background:#14301f;color:#65ee99;font-size:12px;font-weight:900}
+.task{display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid #193524}
+.task:last-child{border-bottom:0}.icon{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:13px;background:#14301f;font-size:21px}
+.taskmain{flex:1}.taskmain b{display:block;margin-bottom:3px}
+.task button{padding:9px 12px;border-radius:10px;background:#35e27f;color:#06120b;font-weight:900}
+.task button:disabled{opacity:.45;cursor:not-allowed}
+.progress{height:9px;background:#13251a;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;width:0;background:#35e27f}
+.method{padding:12px;margin:8px 0;border:1px solid #284936;border-radius:12px}.method.active{border-color:#35e27f;background:#0e2417}
+.wallet{font-size:36px;font-weight:900}.video{width:100%;max-height:430px;background:#000;border-radius:14px;margin:9px 0}
+.actions{display:flex;gap:8px}.actions button{flex:1;padding:10px;border-radius:10px;background:#17271d;color:#fff}
+.post{padding:15px 0;border-top:1px solid #1b3a28}.post:first-child{border-top:0}
+.msg{text-align:center;min-height:23px;color:#8ff0b4}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}.login .card{width:100%;max-width:430px}
+.logo{width:70px;height:70px;margin:auto;display:grid;place-items:center;border-radius:22px;background:#35e27f;color:#06120b;font-size:29px;font-weight:900}
+.bottom{position:fixed;z-index:20;left:0;right:0;bottom:0;display:flex;gap:4px;padding:9px;background:#07110c;border-top:1px solid #193524}
+.bottom button{flex:1;background:transparent;color:#8da998;padding:7px 2px;border-radius:10px;font-size:12px}
+.bottom button.active{background:#14301f;color:#35e27f;font-weight:900}
+@media(max-width:360px){.hero h1{font-size:25px}.bottom button{font-size:11px}}
+</style>
+</head>
+<body>
+
+<section id="login" class="login">
+<div class="card">
+<div class="logo">MG</div>
+<h1 style="text-align:center;margin:12px 0 4px">Mony<span class="green">Go</span></h1>
+<p class="muted" style="text-align:center">Create • Share • Earn</p>
+<input id="authUser" autocomplete="username" placeholder="Username or Email">
+<input id="authPass" autocomplete="current-password" type="password" placeholder="Password (4+ characters)">
+<button id="loginBtn" class="btn full">Login / Create Account</button>
+<p id="authMsg" class="msg"></p>
+</div>
+</section>
+
+<div id="app" class="app hidden">
+<header class="header">
+<div class="brand">🟢 Mony<span>Go</span></div>
+<button id="avatar" class="avatar">MG</button>
+</header>
+
+<main class="wrap">
+
+<section id="homePage" class="page">
+<div class="card hero">
+<span class="badge">MONYPOINTS</span>
+<h1>Earn points.<br>Turn activity into rewards.</h1>
+<p class="muted">Daily tasks, videos and referrals — all in one place.</p>
+<button class="btn" onclick="showPage('earnPage')">⚡ Start Earning</button>
+</div>
+
+<div class="stats">
+<div class="stat">Balance<b id="balance">0</b><small class="muted">Points</small></div>
+<div class="stat">Videos<b id="videoCount">0</b><small class="muted">Created</small></div>
+<div class="stat">Referrals<b id="refCount">0</b><small class="muted">Friends</small></div>
+</div>
+
+<div class="card">
+<div class="row">
+<div><b>🎁 Daily Bonus</b><div id="bonusText" class="muted">Claim +20 points today</div></div>
+<button id="bonusBtn" class="btn">+20</button>
+</div>
+<div class="progress" style="margin-top:12px"><i id="dailyProgress"></i></div>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0">🔥 Popular Ways to Earn</h3>
+<div class="task"><div class="icon">▶️</div><div class="taskmain"><b>Watch Video</b><span class="muted">Complete a task</span></div><span class="reward">+5</span></div>
+<div class="task"><div class="icon">🎥</div><div class="taskmain"><b>Create Video</b><span class="muted">Publish your content</span></div><span class="reward">+10</span></div>
+<div class="task"><div class="icon">👥</div><div class="taskmain"><b>Invite Friends</b><span class="muted">Referral reward</span></div><span class="reward">+50</span></div>
+</div>
+</section>
+
+<section id="earnPage" class="page hidden">
+<h2>⚡ Earn</h2>
+<div class="card">
+<h3 style="margin-top:0">Today's Tasks</h3>
+<div class="task"><div class="icon">🎁</div><div class="taskmain"><b>Daily Bonus</b><span class="reward">+20</span></div><button id="bonusBtn2">Claim</button></div>
+<div class="task"><div class="icon">▶️</div><div class="taskmain"><b>Watch Video</b><span class="muted">Demo task • once daily</span><span class="reward">+5</span></div><button id="watchBtn">Start</button></div>
+<div class="task"><div class="icon">📱</div><div class="taskmain"><b>TikTok Campaign</b><span class="muted">Integration pending approval</span><span class="reward">+15</span></div><button id="tiktokBtn">Open</button></div>
+</div>
+<div class="card">
+<h3 style="margin-top:0">🏆 Campaigns</h3>
+<div class="method"><b>Creator Challenge</b><p class="muted">Publish 3 videos.</p><span class="reward">+50 Points</span></div>
+<div class="method"><b>First 1,000 Points</b><p class="muted">Reach your first milestone.</p><span class="reward">+100 Bonus</span></div>
+</div>
+</section>
+
+<section id="createPage" class="page hidden">
+<h2>🎥 Create Video</h2>
+<div class="card">
+<input id="title" maxlength="80" placeholder="Video title">
+<textarea id="desc" maxlength="500" placeholder="Description"></textarea>
+<input id="file" type="file" accept="video/*">
+<video id="preview" class="video hidden" controls playsinline></video>
+<div class="row">
+<button id="camera" class="btn">📹 Camera</button>
+<button id="stop" class="btn dark" disabled>⏹ Stop</button>
+</div>
+<button id="publish" class="btn full" style="margin-top:9px">🚀 Publish +10 Points</button>
+<p id="videoMsg" class="msg"></p>
+</div>
+</section>
+
+<section id="feedPage" class="page hidden">
+<h2>🔥 My Videos</h2>
+<div id="feedList" class="card"></div>
+</section>
+
+<section id="walletPage" class="page hidden">
+<h2>🪙 Wallet</h2>
+<div class="card">
+<div class="muted">Available MonyPoints</div>
+<div id="walletBalance" class="wallet">0</div>
+<p class="muted">Real-money withdrawal will be enabled after backend/payment integration.</p>
+</div>
+<div class="card">
+<h3 style="margin-top:0">Withdrawal Method</h3>
+<div class="method active">📱 KBZPay</div>
+<div class="method">📱 Wave Money</div>
+<div class="method">🏦 Bank Transfer</div>
+<input id="withdrawName" placeholder="Account name">
+<input id="withdrawNumber" placeholder="Wallet / Account number">
+<button id="withdrawBtn" class="btn full">Request Withdrawal</button>
+<p id="withdrawMsg" class="msg"></p>
+</div>
+</section>
+
+<section id="profilePage" class="page hidden">
+<h2>👤 Profile</h2>
+<div class="card">
+<div class="row" style="align-items:center">
+<div id="profileAvatar" class="avatar" style="display:grid;place-items:center">MG</div>
+<div><b id="profileName">User</b><div class="muted">MonyGo Creator</div></div>
+</div>
+</div>
+<div class="card">
+<h3 style="margin-top:0">🎁 Invite Friends</h3>
+<p class="muted">Referral code:</p>
+<div id="refCode" class="method"><b>MONYGO-USER</b></div>
+<button id="copyRef" class="btn full">📋 Copy Referral Code</button>
+<button id="addRef" class="btn dark full" style="margin-top:8px">+ Add Demo Referral</button>
+</div>
+<div class="card">
+<h3 style="margin-top:0">📊 Account</h3>
+<p id="accountVideos" class="muted">Videos: 0</p>
+<p id="accountPoints" class="muted">Points: 0</p>
+<p id="accountRefs" class="muted">Referrals: 0</p>
+<button id="logout" class="btn red full">Logout</button>
+</div>
+</section>
+
+</main>
+
+<nav class="bottom">
+<button data-page="homePage" class="active">🏠<br>Home</button>
+<button data-page="earnPage">⚡<br>Earn</button>
+<button data-page="createPage">🎥<br>Create</button>
+<button data-page="walletPage">🪙<br>Wallet</button>
+<button data-page="profilePage">👤<br>Profile</button>
+</nav>
+</div>
+
+<script>
+"use strict";
+
+const $=id=>document.getElementById(id);
+
+const defaultState={
+ balance:0,
+ referrals:0,
+ lastBonus:"",
+ watchDate:"",
+ tiktokDate:"",
+ videos:[]
+};
+
+let state=JSON.parse(localStorage.getItem("monygo-state-v4")||"null")||defaultState;
+let user=localStorage.getItem("monygo-user")||"";
+let mediaURL="";
+let stream=null;
+let recorder=null;
+let chunks=[];
+
+function save(){
+ localStorage.setItem("monygo-state-v4",JSON.stringify(state));
+}
+
+function today(){
+ return new Date().toISOString().slice(0,10);
+}
+
+function esc(value){
+ return String(value??"").replace(/[&<>"']/g,m=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+ }[m]));
+}
+
+function addPoints(amount){
+ state.balance+=amount;
+ save();
+ render();
+}
+
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+ $(id).classList.remove("hidden");
+ document.querySelectorAll(".bottom button").forEach(b=>{
+  b.classList.toggle("active",b.dataset.page===id);
+ });
+ window.scrollTo(0,0);
+}
+
+function openApp(){
+ $("login").classList.add("hidden");
+ $("app").classList.remove("hidden");
+
+ const initials=(user||"MG").slice(0,2).toUpperCase();
+ $("avatar").textContent=initials;
+ $("profileAvatar").textContent=initials;
+ $("profileName").textContent=user||"User";
+
+ const clean=(user||"USER").replace(/[^a-z0-9]/gi,"").slice(0,8).toUpperCase()||"USER";
+ $("refCode").innerHTML="<b>MONYGO-"+esc(clean)+"</b>";
+
+ render();
+}
+
+function render(){
+ const d=today();
+ const bonusClaimed=state.lastBonus===d;
+ const watchDone=state.watchDate===d;
+ const tiktokDone=state.tiktokDate===d;
+
+ $("balance").textContent=state.balance;
+ $("walletBalance").textContent=state.balance;
+ $("videoCount").textContent=state.videos.length;
+ $("refCount").textContent=state.referrals;
+
+ $("accountVideos").textContent="Videos: "+state.videos.length;
+ $("accountPoints").textContent="Points: "+state.balance;
+ $("accountRefs").textContent="Referrals: "+state.referrals;
+
+ $("bonusBtn").disabled=bonusClaimed;
+ $("bonusBtn2").disabled=bonusClaimed;
+ $("bonusBtn").textContent=bonusClaimed?"Claimed":"+20";
+ $("bonusBtn2").textContent=bonusClaimed?"Done":"Claim";
+ $("bonusText").textContent=bonusClaimed?"Come back tomorrow.":"Claim +20 points today";
+ $("dailyProgress").style.width=bonusClaimed?"100%":"0%";
+
+ $("watchBtn").disabled=watchDone;
+ $("watchBtn").textContent=watchDone?"Done":"Start";
+
+ $("tiktokBtn").disabled=tiktokDone;
+ $("tiktokBtn").textContent=tiktokDone?"Done":"Open";
+
+ if(!state.videos.length){
+  $("feedList").innerHTML='<p class="muted" style="text-align:center">No videos yet.<br>Create your first video!</p>';
+ }else{
+  $("feedList").innerHTML=state.videos.slice().reverse().map(v=>`
+   <article class="post">
+    <b>🎬 ${esc(v.title)}</b>
+    <p class="muted">${esc(v.desc||"No description")}</p>
+    ${v.data?`<video class="video" src="${v.data}" controls playsinline></video>`:""}
+    <div class="actions">
+     <button onclick="likeVideo(${v.id})">❤️ ${v.likes}</button>
+     <button onclick="viewVideo(${v.id})">👁️ ${v.views}</button>
+    </div>
+   </article>
+  `).join("");
+ }
+}
+
+function claimBonus(){
+ if(state.lastBonus===today())return;
+ state.lastBonus=today();
+ addPoints(20);
+}
+
+$("bonusBtn").onclick=claimBonus;
+$("bonusBtn2").onclick=claimBonus;
+
+$("watchBtn").onclick=()=>{
+ if(state.watchDate===today())return;
+ state.watchDate=today();
+ addPoints(5);
+ alert("✅ Demo task completed!\n+5 MonyPoints");
+};
+
+$("tiktokBtn").onclick=()=>{
+ if(state.tiktokDate===today())return;
+ alert("📱 TikTok integration will be connected after API/backend approval.");
+ state.tiktokDate=today();
+ addPoints(15);
+};
+
+$("addRef").onclick=()=>{
+ state.referrals++;
+ addPoints(50);
+};
+
+$("copyRef").onclick=async()=>{
+ const code=$("refCode").innerText.trim();
+ try{
+  await navigator.clipboard.writeText(code);
+  alert("✅ Referral code copied!");
+ }catch(e){
+  alert("Referral code: "+code);
+ }
+};
+
+$("logout").onclick=()=>{
+ localStorage.removeItem("monygo-user");
+ location.reload();
+};
+
+$("avatar").onclick=()=>showPage("profilePage");
+
+document.querySelectorAll(".bottom button").forEach(btn=>{
+ btn.onclick=()=>showPage(btn.dataset.page);
+});
+
+$("loginBtn").onclick=()=>{
+ const u=$("authUser").value.trim();
+ const p=$("authPass").value;
+
+ if(!u){
+  $("authMsg").textContent="Username or Email ထည့်ပါ။";
+  return;
+ }
+ if(p.length<4){
+  $("authMsg").textContent="Password အနည်းဆုံး 4 characters ထည့်ပါ။";
+  return;
+ }
+
+ user=u;
+ localStorage.setItem("monygo-user",u);
+ openApp();
+};
+
+$("file").onchange=()=>{
+ const file=$("file").files[0];
+ if(!file)return;
+
+ if(!file.type.startsWith("video/")){
+  $("videoMsg").textContent="❌ Video file ပဲရွေးပါ။";
+  return;
+ }
+
+ if(mediaURL)URL.revokeObjectURL(mediaURL);
+ mediaURL=URL.createObjectURL(file);
+ $("preview").src=mediaURL;
+ $("preview").classList.remove("hidden");
+ $("videoMsg").textContent="✅ Video loaded.";
+};
+
+$("camera").onclick=async()=>{
+ try{
+  stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+
+  $("preview").classList.remove("hidden");
+  $("preview").srcObject=stream;
+  $("preview").muted=true;
+  await $("preview").play();
+
+  chunks=[];
+  recorder=new MediaRecorder(stream);
+
+  recorder.ondataavailable=e=>{
+   if(e.data.size)chunks.push(e.data);
+  };
+
+  recorder.onstop=()=>{
+   const blob=new Blob(chunks,{type:"video/webm"});
+   if(mediaURL)URL.revokeObjectURL(mediaURL);
+   mediaURL=URL.createObjectURL(blob);
+   $("preview").srcObject=null;
+   $("preview").src=mediaURL;
+   $("preview").muted=false;
+   $("videoMsg").textContent="✅ Recording finished.";
+  };
+
+  recorder.start();
+  $("camera").disabled=true;
+  $("stop").disabled=false;
+  $("videoMsg").textContent="🔴 Recording...";
+ }catch(e){
+  $("videoMsg").textContent="❌ Camera permission denied or unavailable.";
+ }
+};
+
+$("stop").onclick=()=>{
+ if(recorder&&recorder.state!=="inactive")recorder.stop();
+ if(stream)stream.getTracks().forEach(track=>track.stop());
+ stream=null;
+ $("camera").disabled=false;
+ $("stop").disabled=true;
+};
+
+$("publish").onclick=()=>{
+ const title=$("title").value.trim();
+
+ if(!title){
+  $("videoMsg").textContent="❌ Video title ထည့်ပါ။";
+  return;
+ }
+
+ if(!mediaURL){
+  $("videoMsg").textContent="❌ Video upload သို့မဟုတ် camera record လုပ်ပါ။";
+  return;
+ }
+
+ /*
+  The video preview is kept in this browser session.
+  Real cloud video storage will be added with Supabase Storage.
+ */
+ state.videos.push({
+  id:Date.now(),
+  title:title,
+  desc:$("desc").value.trim(),
+  user:user||"User",
+  likes:0,
+  views:0,
+  data:mediaURL
+ });
+
+ state.balance+=10;
+ save();
+
+ $("title").value="";
+ $("desc").value="";
+ $("videoMsg").textContent="🎉 Published! +10 MonyPoints";
+ render();
+ showPage("feedPage");
+};
+
+window.likeVideo=id=>{
+ const video=state.videos.find(v=>v.id===id);
+ if(video){
+  video.likes++;
+  save();
+  render();
+ }
+};
+
+window.viewVideo=id=>{
+ const video=state.videos.find(v=>v.id===id);
+ if(video){
+  video.views++;
+  save();
+  render();
+ }
+};
+
+$("withdrawBtn").onclick=()=>{
+ const name=$("withdrawName").value.trim();
+ const number=$("withdrawNumber").value.trim();
+
+ if(!name||!number){
+  $("withdrawMsg").textContent="Account name နဲ့ account number ထည့်ပါ။";
+  return;
+ }
+
+ $("withdrawMsg").textContent="⚠️ Withdrawal backend မချိတ်ရသေးပါ။ ငွေမလွှဲသေးပါ။";
+};
+
+if(user)openApp();
+</script>
+</body>
+</html>
